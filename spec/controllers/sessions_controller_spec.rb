@@ -2,11 +2,8 @@ require "rails_helper"
 
 RSpec.describe SessionsController, type: :controller do
   describe "#create" do
-    let(:service) do
-      Auth = Struct.new(:result, :errors)
-
-      Auth.new("some_token", {})
-    end
+    let(:auth) { Struct.new(:result, :errors) }
+    let(:service) { auth.new("some_token", {}) }
 
     before do
       allow_any_instance_of(AuthenticateUser).to receive(:perform).and_return(service)
