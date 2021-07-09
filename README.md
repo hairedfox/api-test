@@ -1,24 +1,30 @@
-# README
+# How to start
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ruby 2.7.2
+Rails 6.1.4
+Database: Sqlite
 
-Things you may want to cover:
+--Step 1: Preparation and start the server
+```
+cd /path/to/project
+cp .env.example .env
 
-* Ruby version
+# Install necessary gems
+bundle install
 
-* System dependencies
+# Create and migrate database
+bin/rails db:create db:migrate
 
-* Configuration
+# Start the server
+bundle exec guard
+```
 
-* Database creation
+--Step 2: Import this to Postman to test
+https://www.getpostman.com/collections/49a867bd1d7bf9c1f318
 
-* Database initialization
 
-* How to run the test suite
+### Estimation and Actual
 
-* Services (job queues, cache servers, search engines, etc.)
+![estimate](https://i.im.ge/2021/07/09/OAQcK.png)
 
-* Deployment instructions
-
-* ...
+Thank you!
