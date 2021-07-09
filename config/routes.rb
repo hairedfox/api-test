@@ -6,4 +6,6 @@ Rails.application.routes.draw do
       patch :update
     end
   end
+
+  resources :posts, only: [:create]
 end

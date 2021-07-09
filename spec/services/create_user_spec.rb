@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe "CreateUser" do
-  context "when the params are all valid" do
+  context "when all the params are valid" do
     let(:params) do
       {
         email: "hai@example.com",
