@@ -25,4 +25,28 @@ RSpec.describe UsersController, type: :controller do
       it { expect(User.count).to eq(1) }
     end
   end
+
+  describe "#update" do
+    let(:params) do
+      {
+        password: "password",
+        password_confirmation: "password",
+        nickname: "HAREFX"
+      }
+    end
+    let(:service_struct) { Struct.new(:result, :errors) }
+
+    let(:user) { create(:user, email: "hai@example.com", password: "Password1@", password_confirmation: "Password1@") }
+
+    context "when the params includes the password" do
+      before do
+        allow_any_instance_of(ApplicationController).to receive(:authenticate!).and_return(true)
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        allow_any_instance_of(UpdateUser).to receive(:perform).and_return(service_struct.new(nil, {}))
+        patch :update, params: params
+      end
+
+      it { expect(response).to have_http_status(:ok) }
+    end
+  end
 end

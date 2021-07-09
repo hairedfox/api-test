@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
   post "authenticate", to: "sessions#create"
 
-  resources :users, only: [:create]
+  resources :users, only: [:create] do
+    collection do
+      patch :update
+    end
+  end
 end

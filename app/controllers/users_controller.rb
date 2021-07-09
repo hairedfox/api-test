@@ -13,9 +13,21 @@ class UsersController < ApplicationController
     render json: { auth_token: service.result }, status: :ok
   end
 
+  def update
+    user_service = UpdateUser.new(user_params, current_user).perform
+
+    return render(json: { error: user_service.errors }, status: :bad_request) if user_service.errors.present?
+
+    render json: {}, status: :ok
+  end
+
   private
 
   def user_params
-    params.permit(:email, :password, :password_confirmation, :nickname)
+    params.permit(*User::PERMITTED_PARAMS)
+  end
+
+  def user_update_params
+    params.permit(*User::UPDATABLE_PARAMS)
   end
 end

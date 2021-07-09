@@ -14,7 +14,8 @@ describe "AuthorizeApiRequest" do
   end
 
   context "when the authorization header are present and got non-existed user" do
-    let(:service) { AuthorizeApiRequest.new({ "Authorization" => "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MjU4NTIzNjh9.NcFaU-WkI1QltRThSYnuhyusj8mBAEwtL5SBaE4nao4" }) }
+    let(:non_exist_token) { JsonWebToken.encode({ user_id: 1 }) }
+    let(:service) { AuthorizeApiRequest.new({ "Authorization" => "Bearer #{non_exist_token}" }) }
 
     it do
       expect do
