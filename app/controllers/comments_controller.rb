@@ -6,4 +6,12 @@ class CommentsController < ApplicationController
 
     render json: CommentSerializer.new(service.result).serializable_hash, status: :ok
   end
+
+  def update
+    service = UpdateComment.new(params, current_user).perform
+
+    return render json: { error: service.errors }, status: :bad_request if service.errors.present?
+
+    render json: CommentSerializer.new(service.result).serializable_hash, status: :ok
+  end
 end

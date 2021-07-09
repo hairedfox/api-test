@@ -16,4 +16,31 @@ RSpec.describe CommentsController, type: :controller do
       it { expect(response).to have_http_status(:ok) }
     end
   end
+
+  describe "#update" do
+    let(:user) { create(:user, email: "user1@example.com") }
+    let(:second_user) { create(:user, email: "user2@example.com") }
+    let(:post) { create(:post, user: user) }
+    let(:comment) { create(:comment, user: user, post: post) }
+
+    context "when the content is valid and the user owns the comment" do
+      before do
+        mock_login(user)
+        allow_any_instance_of(UpdateComment).to receive(:perform).and_return(service_struct.new(nil, {}))
+        put :update, params: { post_id: post.id, id: comment.id, content: "Just test the comment" }
+      end
+
+      it { expect(response).to have_http_status(:ok) }
+    end
+
+    context "when user tries to edit other's comment" do
+      before do
+        mock_login(user)
+        allow_any_instance_of(UpdateComment).to receive(:perform).and_return(service_struct.new(nil, { base: "error message" }))
+        put :update, params: { post_id: post.id, id: comment.id, content: "Just test the comment" }
+      end
+
+      it { expect(response).to have_http_status(:bad_request) }
+    end
+  end
 end
