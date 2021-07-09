@@ -43,4 +43,31 @@ RSpec.describe CommentsController, type: :controller do
       it { expect(response).to have_http_status(:bad_request) }
     end
   end
+
+  describe "#destroy" do
+    let(:user) { create(:user, email: "user1@example.com") }
+    let(:second_user) { create(:user, email: "user2@example.com") }
+    let(:post) { create(:post, user: user) }
+    let!(:comment) { create(:comment, user: user, post: post) }
+
+    context "when users delete their own comments" do
+      before do
+        mock_login(user)
+        allow_any_instance_of(DeleteComment).to receive(:perform).and_return(service_struct.new(nil, {}))
+        delete :destroy, params: { post_id: post.id, id: comment.id }
+      end
+
+      it { expect(response).to have_http_status(:ok) }
+    end
+
+    context "when users delete other's comment" do
+      before do
+        mock_login(user)
+        allow_any_instance_of(DeleteComment).to receive(:perform).and_return(service_struct.new(nil, { base: "some error" }))
+        delete :destroy, params: { post_id: post.id, id: comment.id }
+      end
+
+      it { expect(response).to have_http_status(:bad_request) }
+    end
+  end
 end
