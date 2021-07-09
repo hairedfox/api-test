@@ -3,7 +3,7 @@ class User < ApplicationRecord
   UPDATABLE_PARAMS = %i[password password_confirmation nickname].freeze
 
   has_many :posts
-  has_many :comments, through: :posts
+  has_many :comments
 
   validates :email, presence: true, email: true
   validates :nickname, presence: true

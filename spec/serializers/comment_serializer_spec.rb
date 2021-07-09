@@ -3,7 +3,7 @@ require "rails_helper"
 describe "CommentSerializer" do
   let(:user) { create(:user) }
   let(:post) { create(:post, user: user) }
-  let(:comment) { create(:comment, post: post, content: "Sample comment") }
+  let(:comment) { create(:comment, post: post, content: "Sample comment", user: user) }
   let(:serialize_result) { CommentSerializer.new(comment).serializable_hash }
 
   it { expect(serialize_result.size).to eq(1) }
