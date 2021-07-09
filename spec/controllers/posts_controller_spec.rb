@@ -44,4 +44,49 @@ RSpec.describe PostsController, type: :controller do
       it { expect(response).to have_http_status(:bad_request) }
     end
   end
+
+  describe "#update" do
+    context "when all the params are valid" do
+      let(:post) { create(:post, title: "Sample Title", body: "Some sample for the body with 20 or more chars", user: user) }
+
+      let(:params) do
+        {
+          id: post.id,
+          title: "Different Title",
+          body: "Another sample body for a valid post"
+        }
+      end
+
+      before do
+        mock_login(user)
+        allow_any_instance_of(UpdatePost).to receive(:perform).and_return(service_struct.new(nil, {}))
+        put :update, params: params
+      end
+
+      it { expect(response.parsed_body[:data]).to eq(serializable_post["data"]) }
+      it { expect(response).to have_http_status(:ok) }
+    end
+
+    context "when user update other's posts" do
+      let(:second_user) { create(:user) }
+      let(:post) { create(:post, title: "Sample Title", body: "Some sample for the body with 20 or more chars", user: user) }
+
+      let(:params) do
+        {
+          id: post.id,
+          title: "Different Title",
+          body: "Another sample body for a valid post"
+        }
+      end
+
+      before do
+        mock_login(second_user)
+        allow_any_instance_of(UpdatePost).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}))
+        put :update, params: params
+      end
+
+      it { expect(response).to have_http_status(:bad_request) }
+      it { expect(response.parsed_body["error"]).to eq({ "base" => "Couldn't find Post with 'id'=#{post.id}"}) }
+    end
+  end
 end
