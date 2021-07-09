@@ -5,11 +5,17 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate!
 
+  rescue_from JWT::DecodeError, with: :render_unauthorized
+
   attr_reader :current_user
 
   def authenticate!
     @current_user = AuthorizeApiRequest.new(request.headers).perform.result
-    render json: { error: "Not Authorized" }, status: :unauthorized unless @current_user
+    render_unauthorized unless @current_user
+  end
+
+  def render_unauthorized
+    render json: { error: "Not Authorized" }, status: :unauthorized
   end
 
   def render_error(service, error_code = :bad_request)
