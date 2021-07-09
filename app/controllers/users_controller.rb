@@ -1,6 +1,12 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate!, only: :create
 
+  def show
+    user = User.find(params[:id])
+
+    render json: UserSerializer.new(user).serializable_hash
+  end
+
   def create
     user_service = CreateUser.new(user_params).perform
 

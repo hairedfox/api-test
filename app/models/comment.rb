@@ -3,5 +3,5 @@ class Comment < ApplicationRecord
 
   validates :content, presence: true, length: { minimum: 3, maximum: 255 }
 
-  delegate :user, to: :post
+  delegate :user, :user_nickname, to: :post
 end
