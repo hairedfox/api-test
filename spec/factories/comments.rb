@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :comment do
-    content { "MyString" }
+    content { Faker::Lorem.sentence }
     post { nil }
   end
 end
