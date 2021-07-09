@@ -1,4 +1,4 @@
-class CreateComment < BaseService
+class PostServices::Create < BaseService
   def initialize(params, current_user)
     @params = params
     @current_user = current_user
@@ -6,22 +6,19 @@ class CreateComment < BaseService
   end
 
   def perform
-    create_comment!
+    create_post!
 
     self
   rescue StandardError => e
-    @errors[:base] = e.message
-
-    self
+    set_up_error(e)
   end
 
   private
 
-  def create_comment!
-    Comment.create!(
-      content: params[:content],
-      post_id: params[:post_id],
-      user: current_user
+  def create_post!
+    @result = current_user.posts.create!(
+      title: params[:title],
+      body: params[:body]
     )
   end
 

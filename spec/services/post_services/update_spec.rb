@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "UpdatePost" do
+describe "PostServices::Update" do
   let!(:user) { create(:user, email: "user1@example.com") }
   let!(:post) { create(:post, title: "Initial Title", body: "Sample Body with over 20 characters", user: user) }
   let(:params) do
@@ -12,7 +12,7 @@ describe "UpdatePost" do
   end
 
   context "when all the params are valid" do
-    let(:service) { UpdatePost.new(params, user) }
+    let(:service) { PostServices::Update.new(params, user) }
 
     it do
       expect do
@@ -26,7 +26,7 @@ describe "UpdatePost" do
 
   context "when users try to update other's posts" do
     let(:second_user) { create(:user, email: "user2@example.com") }
-    let(:service) { UpdatePost.new(params, second_user) }
+    let(:service) { PostServices::Update.new(params, second_user) }
 
     it do
       expect do

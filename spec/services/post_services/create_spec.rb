@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "CreatePost" do
+describe "PostServices::Create" do
   context "when all the params are valid" do
     let(:user) { create(:user) }
     let(:params) do
@@ -10,7 +10,7 @@ describe "CreatePost" do
       }
     end
 
-    let(:service) { CreatePost.new(params, user) }
+    let(:service) { PostServices::Create.new(params, user) }
 
     it do
       expect do

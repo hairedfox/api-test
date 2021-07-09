@@ -1,4 +1,4 @@
-class UpdateUser < BaseService
+class UserServices::Update < BaseService
   def initialize(params, current_user)
     @params = params
     @current_user = current_user

@@ -1,11 +1,11 @@
 require "rails_helper"
 
-describe "DeletePost" do
+describe "PostServices::Delete" do
   let!(:user) { create(:user, email: "user1@example.com") }
   let!(:post) { create(:post, user: user) }
 
   context "when the post belongs to current user" do
-    let(:service) { DeletePost.new(post.id, user) }
+    let(:service) { PostServices::Delete.new(post.id, user) }
 
     it do
       expect do
@@ -16,7 +16,7 @@ describe "DeletePost" do
 
   context "when the post belongs to other user" do
     let(:second_user) { create(:user, email: "user2@example.com") }
-    let(:service) { DeletePost.new(post.id, second_user) }
+    let(:service) { PostServices::Delete.new(post.id, second_user) }
 
     it do
       expect do

@@ -1,24 +1,24 @@
 class CommentsController < ApplicationController
   def create
-    service = CreateComment.new(params[:post_id], current_user).perform
+    service = CommentServices::Create.new(params[:post_id], current_user).perform
 
-    return render json: { error: service.errors }, status: :bad_request if service.errors.present?
+    return render_error(service) if service.has_error?
 
-    render json: CommentSerializer.new(service.result).serializable_hash, status: :ok
+    render_with_serializer(service.result, :comment)
   end
 
   def update
-    service = UpdateComment.new(params, current_user).perform
+    service = CommentServices::Update.new(params, current_user).perform
 
-    return render json: { error: service.errors }, status: :bad_request if service.errors.present?
+    return render_error(service) if service.has_error?
 
-    render json: CommentSerializer.new(service.result).serializable_hash, status: :ok
+    render_with_serializer(service.result, :comment)
   end
 
   def destroy
-    service = DeleteComment.new(params[:id], current_user).perform
+    service = CommentServices::Delete.new(params[:id], current_user).perform
 
-    return render json: { error: service.errors }, status: :bad_request if service.errors.present?
+    return render_error(service) if service.has_error?
 
     render json: {}, status: :ok
   end

@@ -4,7 +4,7 @@ RSpec.describe PostsController, type: :controller do
   let(:user) { create(:user) }
   let(:post_obj) { create(:post, user: user) }
   let(:serializable_post) { PostSerializer.new(post_obj).serializable_hash }
-  let(:service_struct) { Struct.new(:result, :errors) }
+  let(:service_struct) { Struct.new(:result, :errors, :has_error?) }
   let(:params) do
     {
       title: post_obj.title,
@@ -93,7 +93,7 @@ RSpec.describe PostsController, type: :controller do
     context "when all the params are valid" do
       before do
         mock_login(user)
-        allow_any_instance_of(CreatePost).to receive(:perform).and_return(service_struct.new(post_obj, {}))
+        allow_any_instance_of(PostServices::Create).to receive(:perform).and_return(service_struct.new(post_obj, {}, false))
         post :create, params: params
       end
 
@@ -104,7 +104,7 @@ RSpec.describe PostsController, type: :controller do
     context "when there are errors" do
       before do
         mock_login(user)
-        allow_any_instance_of(CreatePost).to receive(:perform).and_return(service_struct.new(nil, { errors: { some_error: "message" } }))
+        allow_any_instance_of(PostServices::Create).to receive(:perform).and_return(service_struct.new(nil, { errors: { some_error: "message" } }, true))
         post :create, params: params
       end
 
@@ -126,7 +126,7 @@ RSpec.describe PostsController, type: :controller do
 
       before do
         mock_login(user)
-        allow_any_instance_of(UpdatePost).to receive(:perform).and_return(service_struct.new(nil, {}))
+        allow_any_instance_of(PostServices::Update).to receive(:perform).and_return(service_struct.new(nil, {}, false))
         put :update, params: params
       end
 
@@ -148,7 +148,7 @@ RSpec.describe PostsController, type: :controller do
 
       before do
         mock_login(second_user)
-        allow_any_instance_of(UpdatePost).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}))
+        allow_any_instance_of(PostServices::Update).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}, true))
         put :update, params: params
       end
 
@@ -164,7 +164,7 @@ RSpec.describe PostsController, type: :controller do
     context "when users delete their own posts" do
       before do
         mock_login(user)
-        allow_any_instance_of(DeletePost).to receive(:perform).and_return(service_struct.new(nil, {}))
+        allow_any_instance_of(PostServices::Delete).to receive(:perform).and_return(service_struct.new(nil, {}, false))
         delete :destroy, params: { id: post.id }
       end
 
@@ -176,7 +176,7 @@ RSpec.describe PostsController, type: :controller do
 
       before do
         mock_login(second_user)
-        allow_any_instance_of(DeletePost).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}))
+        allow_any_instance_of(PostServices::Delete).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}, true))
         delete :destroy, params: { id: post.id }
       end
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "UpdateUser" do
+describe "UserServices::Update" do
   let!(:user) { create(:user, password: "password", nickname: "Hai") }
 
   context "when the params include password" do
@@ -12,7 +12,7 @@ describe "UpdateUser" do
       }
     end
 
-    let(:service) { UpdateUser.new(params, user) }
+    let(:service) { UserServices::Update.new(params, user) }
 
     it do
       expect do
@@ -31,7 +31,7 @@ describe "UpdateUser" do
       }
     end
 
-    let(:service) { UpdateUser.new(params, user) }
+    let(:service) { UserServices::Update.new(params, user) }
 
     it do
       expect do

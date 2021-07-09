@@ -1,12 +1,12 @@
 require "rails_helper"
 
-describe "CreateComment" do
+describe "CommentServices::Create" do
   let(:user) { create(:user, email: "user1@example.com", nickname: "User1") }
   let(:second_user) { create(:user, email: "user2@example.com", nickname: "User2") }
   let(:post) { create(:post, user: user) }
 
   context "when the post is present and the comment is valid" do
-    let(:service) { CreateComment.new({ post_id: post.id, content: "Sample comment" }, user) }
+    let(:service) { CommentServices::Create.new({ post_id: post.id, content: "Sample comment" }, user) }
 
     it do
       expect do
@@ -22,7 +22,7 @@ describe "CreateComment" do
   end
 
   context "when comment on other's posts" do
-    let(:service) { CreateComment.new({ post_id: post.id, content: "Sample comment" }, second_user) }
+    let(:service) { CommentServices::Create.new({ post_id: post.id, content: "Sample comment" }, second_user) }
 
     it do
       expect do

@@ -1,4 +1,4 @@
-class UpdatePost < BaseService
+class PostServices::Update < BaseService
   def initialize(params, current_user)
     @params = params
     @current_user = current_user
@@ -10,9 +10,7 @@ class UpdatePost < BaseService
 
     self
   rescue StandardError => e
-    @errors[:base] = e.message
-
-    self
+    set_up_error(e)
   end
 
   private

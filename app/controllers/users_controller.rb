@@ -4,13 +4,13 @@ class UsersController < ApplicationController
   def show
     user = User.find(params[:id])
 
-    render json: UserSerializer.new(user).serializable_hash
+    render_with_serializer(user, :user)
   end
 
   def create
-    user_service = CreateUser.new(user_params).perform
+    user_service = UserServices::Create.new(user_params).perform
 
-    return render(json: { error: user_service.errors }, status: :bad_request) unless user_service.result
+    return render_error(service) unless user_service.result
 
     user = user_service.result
 
@@ -20,9 +20,9 @@ class UsersController < ApplicationController
   end
 
   def update
-    user_service = UpdateUser.new(user_params, current_user).perform
+    user_service = UserServices::Update.new(user_params, current_user).perform
 
-    return render(json: { error: user_service.errors }, status: :bad_request) if user_service.errors.present?
+    return render_error(user_service) if user_service.has_error?
 
     render json: {}, status: :ok
   end

@@ -1,4 +1,4 @@
-class DeleteComment < BaseService
+class CommentServices::Delete < BaseService
   def initialize(comment_id, current_user)
     @comment_id = comment_id
     @current_user = current_user
@@ -7,11 +7,10 @@ class DeleteComment < BaseService
 
   def perform
     comment.destroy
-    self
-  rescue StandardError => e
-    @errors[:base] = e.message
 
     self
+  rescue StandardError => e
+    set_up_error(e)
   end
 
   private

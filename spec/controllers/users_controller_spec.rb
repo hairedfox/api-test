@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe UsersController, type: :controller do
   let(:user) { create(:user, email: "hai@example.com", password: "Password1@", password_confirmation: "Password1@") }
   let(:serializable_hash) { UserSerializer.new(user).serializable_hash }
+  let(:service_struct) { Struct.new(:result, :errors, :has_error?) }
 
   describe "#show" do
     before do
@@ -25,8 +26,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     context "when all the params are valid" do
-      let(:auth) { Struct.new(:result, :errors) }
-      let(:service) { auth.new("some_token", {}) }
+      let(:service) { service_struct.new("some_token", {}, false) }
 
       before do
         allow_any_instance_of(AuthenticateUser).to receive(:perform).and_return(service)
@@ -47,12 +47,11 @@ RSpec.describe UsersController, type: :controller do
         nickname: "HAREFX"
       }
     end
-    let(:service_struct) { Struct.new(:result, :errors) }
 
     context "when the params includes the password" do
       before do
         mock_login(user)
-        allow_any_instance_of(UpdateUser).to receive(:perform).and_return(service_struct.new(nil, {}))
+        allow_any_instance_of(UserServices::Update).to receive(:perform).and_return(service_struct.new(nil, {}, false))
         patch :update, params: params
       end
 

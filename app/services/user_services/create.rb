@@ -1,4 +1,4 @@
-class CreateUser < BaseService
+class UserServices::Create < BaseService
   def initialize(params = {})
     @params = params
     super()
