@@ -12,6 +12,73 @@ RSpec.describe PostsController, type: :controller do
     }
   end
 
+  describe "#index" do
+    context "without search params" do
+      before do
+        create_list(:post, 50, user: user)
+        mock_login(user)
+        get :index, params: { page: 2 }
+      end
+
+      it { expect(response.parsed_body["items"]["data"].size).to eq(20) }
+      it { expect(response.parsed_body["pagy"]["page"]).to eq(2) }
+      it { expect(response.parsed_body["pagy"]["last"]).to eq(3) }
+    end
+
+    context "with params search" do
+      let(:second_user) { create(:user) }
+      let!(:first_post) { create(:post, user: user, title: "sample title xi", body: "This is a sample body which has enough characters") }
+      let!(:second_post) { create(:post, user: second_user, title: "element ix", body: "Another sample with enough characters") }
+
+      before { mock_login(user) }
+
+      describe ".title" do
+        let(:params) do
+          {
+            q: {
+              title_cont: "sample"
+            }
+          }
+        end
+
+        before { get :index, params: params }
+
+        it { expect(response.parsed_body["items"]["data"].size).to eq(1) }
+        it { expect(response.parsed_body["items"]["data"].first["id"].to_i).to eq(first_post.id) }
+      end
+
+      describe ".body" do
+        let(:params) do
+          {
+            q: {
+              body_cont: "Another"
+            }
+          }
+        end
+
+        before { get :index, params: params }
+
+        it { expect(response.parsed_body["items"]["data"].size).to eq(1) }
+        it { expect(response.parsed_body["items"]["data"].first["id"].to_i).to eq(second_post.id) }
+      end
+
+      describe ".user_id" do
+        let(:params) do
+          {
+            q: {
+              user_id_eq: user.id
+            }
+          }
+        end
+
+        before { get :index, params: params }
+
+        it { expect(response.parsed_body["items"]["data"].size).to eq(1) }
+        it { expect(response.parsed_body["items"]["data"].first["id"].to_i).to eq(first_post.id) }
+      end
+    end
+  end
+
   describe "#show" do
     before do
       mock_login(user)
