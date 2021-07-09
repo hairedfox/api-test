@@ -40,8 +40,7 @@ RSpec.describe UsersController, type: :controller do
 
     context "when the params includes the password" do
       before do
-        allow_any_instance_of(ApplicationController).to receive(:authenticate!).and_return(true)
-        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        mock_login(user)
         allow_any_instance_of(UpdateUser).to receive(:perform).and_return(service_struct.new(nil, {}))
         patch :update, params: params
       end

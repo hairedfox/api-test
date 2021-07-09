@@ -1,4 +1,10 @@
 class PostsController < ApplicationController
+  def show
+    post = Post.find(params[:id])
+
+    render json: PostSerializer.new(post).serializable_hash
+  end
+
   def create
     service = CreatePost.new(post_params, current_user).perform
 

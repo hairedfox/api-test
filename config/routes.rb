@@ -7,5 +7,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :posts, only: [:create]
+  resources :posts, only: [:create, :show]
 end
