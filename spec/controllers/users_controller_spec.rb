@@ -1,6 +1,19 @@
 require "rails_helper"
 
 RSpec.describe UsersController, type: :controller do
+  let(:user) { create(:user, email: "hai@example.com", password: "Password1@", password_confirmation: "Password1@") }
+  let(:serializable_hash) { UserSerializer.new(user).serializable_hash }
+
+  describe "#show" do
+    before do
+      mock_login(user)
+      get :show, params: { id: user.id }
+    end
+
+    it { expect(response).to have_http_status(:ok) }
+    it { expect(response.parsed_body[:data]).to eq(serializable_hash["data"]) }
+  end
+
   describe "#create" do
     let(:params) do
       {
@@ -35,8 +48,6 @@ RSpec.describe UsersController, type: :controller do
       }
     end
     let(:service_struct) { Struct.new(:result, :errors) }
-
-    let(:user) { create(:user, email: "hai@example.com", password: "Password1@", password_confirmation: "Password1@") }
 
     context "when the params includes the password" do
       before do
