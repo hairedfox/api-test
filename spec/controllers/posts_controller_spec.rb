@@ -89,4 +89,31 @@ RSpec.describe PostsController, type: :controller do
       it { expect(response.parsed_body["error"]).to eq({ "base" => "Couldn't find Post with 'id'=#{post.id}"}) }
     end
   end
+
+  describe "#delete" do
+    let(:user) { create(:user, email: "user1@example.com") }
+    let(:post) { create(:post, user: user) }
+
+    context "when users delete their own posts" do
+      before do
+        mock_login(user)
+        allow_any_instance_of(DeletePost).to receive(:perform).and_return(service_struct.new(nil, {}))
+        delete :destroy, params: { id: post.id }
+      end
+
+      it { expect(response).to have_http_status(:ok) }
+    end
+
+    context "when users delete other posts" do
+      let(:second_user) { create(:user, email: "user2@example.com") }
+
+      before do
+        mock_login(second_user)
+        allow_any_instance_of(DeletePost).to receive(:perform).and_return(service_struct.new(nil, {base: "Couldn't find Post with 'id'=#{post.id}"}))
+        delete :destroy, params: { id: post.id }
+      end
+
+      it { expect(response).to have_http_status(:bad_request) }
+    end
+  end
 end

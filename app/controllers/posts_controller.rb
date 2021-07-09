@@ -21,6 +21,14 @@ class PostsController < ApplicationController
     render json: PostSerializer.new(service.result).serializable_hash
   end
 
+  def destroy
+    service = DeletePost.new(params[:id], current_user).perform
+
+    return render json: { error: service.errors }, status: :bad_request if service.errors.present?
+
+    render json: {}, status: :ok
+  end
+
   private
 
   def post_params
