@@ -7,6 +7,7 @@ class CommentServices::Update < BaseService
 
   def perform
     update_comment!
+    @result = comment
 
     self
   rescue StandardError => e

@@ -3,6 +3,7 @@ require "rails_helper"
 describe "PostServices::Delete" do
   let!(:user) { create(:user, email: "user1@example.com") }
   let!(:post) { create(:post, user: user) }
+  let!(:comments) { create_list(:comment, 5, post: post, user: user) }
 
   context "when the post belongs to current user" do
     let(:service) { PostServices::Delete.new(post.id, user) }
@@ -11,6 +12,7 @@ describe "PostServices::Delete" do
       expect do
         service.perform
       end.to change(Post, :count).by(-1)
+         .and change(Comment, :count).by(-5)
     end
   end
 

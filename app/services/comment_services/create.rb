@@ -16,7 +16,7 @@ class CommentServices::Create < BaseService
   private
 
   def create_comment!
-    Comment.create!(
+    @result = Comment.create!(
       content: params[:content],
       post_id: params[:post_id],
       user: current_user

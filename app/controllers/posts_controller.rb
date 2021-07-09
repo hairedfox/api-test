@@ -25,7 +25,7 @@ class PostsController < ApplicationController
   end
 
   def update
-    service = PostServices::Update.new(post_params, current_user).perform
+    service = PostServices::Update.new(params, current_user).perform
 
     return render_error(service) if service.has_error?
 

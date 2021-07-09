@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   def create
-    service = CommentServices::Create.new(params[:post_id], current_user).perform
+    service = CommentServices::Create.new(params, current_user).perform
 
     return render_error(service) if service.has_error?
 

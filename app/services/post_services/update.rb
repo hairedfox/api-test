@@ -7,6 +7,7 @@ class PostServices::Update < BaseService
 
   def perform
     update_post!
+    @result = post
 
     self
   rescue StandardError => e

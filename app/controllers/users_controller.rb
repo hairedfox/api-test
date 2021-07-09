@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   def create
     user_service = UserServices::Create.new(user_params).perform
 
-    return render_error(service) unless user_service.result
+    return render_error(user_service) unless user_service.result
 
     user = user_service.result
 

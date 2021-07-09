@@ -12,6 +12,8 @@ class UserServices::Update < BaseService
       update_user_without_password!
     end
 
+    @result = current_user
+
     self
   rescue StandardError => e
     @errors[:base] = e.message
